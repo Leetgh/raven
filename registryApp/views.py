@@ -3,9 +3,9 @@ from . import models
 from django.http import  HttpResponse
 from . import tests
 
-# Create your views here.
+#Begin NTUSER View functions
 
-def wordwheel(request, case_id):
+def ntuser_wordwheel(request, case_id):
     """Parses the NTUSER hive and returns Wordwheel MRU entries."""
     wordwheel_list = tests.test("wordwheel")
     case = models.Case.objects.get(pk=case_id)
@@ -16,7 +16,7 @@ def wordwheel(request, case_id):
         wordwheelObj.save()
     return HttpResponse("Done")
 
-def typedURLs(request, case_id):
+def ntuser_typedurls(request, case_id):
     url_set = tests.test("typedurls")
     
     case = models.Case.objects.get(pk=case_id)
@@ -26,7 +26,7 @@ def typedURLs(request, case_id):
         typedUrlsObj.save()
     return HttpResponse("Done")
 
-def typedPaths(request, case_id):
+def ntuser_typedpaths(request, case_id):
     list_of_typedpaths = tests.test("typedpaths")
     case = models.Case.objects.get(pk=case_id)
     for pathObj in list_of_typedpaths:
@@ -35,7 +35,7 @@ def typedPaths(request, case_id):
 
     return HttpResponse(list_of_typedpaths)
 
-def recentDocuments(request, case_id):
+def ntuser_recentdocuments(request, case_id):
     recentDocs = tests.test("recentdocs")
     case = models.Case.objects.get(pk=case_id)
     for docObj in recentDocs:
@@ -45,7 +45,7 @@ def recentDocuments(request, case_id):
     return HttpResponse(recentDocs)
 
 
-def RunMRU(request, case_id):
+def ntuser_runmru(request, case_id):
     """Parses the NTUSER hive and returns RunMRU entries. maintain the valueu of items tyyped in the RUN BOX"""
     runmru_list = tests.test("runmru")
     case = models.Case.objects.get(pk=case_id)
@@ -54,7 +54,7 @@ def RunMRU(request, case_id):
         objRunMRU.save()
     return HttpResponse(runmru_list)
 
-def RunKeys(request, case_id):
+def ntuser_runkeys(request, case_id):
     """Parses the NTUSER hive and returns RunMRU entries. maintain the valueu of items tyyped in the RUN BOX"""
     runkeys_list = tests.test("runkeys")
     case = models.Case.objects.get(pk=case_id)
@@ -64,7 +64,7 @@ def RunKeys(request, case_id):
             objRunKey.save()
     return HttpResponse("Done Runkey")
 
-def mounts(request, case_id):
+def ntuser_mounts(request, case_id):
     """Parses the NTUSER  hives and returns mount points (MountPoints2, Map Network Drive MRU, & MountedDevices)."""
     mounts_list = tests.test("mounts")
     case = models.Case.objects.get(pk=case_id)
@@ -74,7 +74,7 @@ def mounts(request, case_id):
             objmounts.save()
     return HttpResponse(mounts_list)
 
-def systinternals(request, case_id):
+def ntuser_systinternals(request, case_id):
     """Parses the NTUSER hive and returns accepted EULA entries for Sysinternal tools that have run on the system"""
     sysinternals_tools_list = tests.test("sysinternals")
     case = models.Case.objects.get(pk=case_id)
@@ -83,3 +83,80 @@ def systinternals(request, case_id):
             systoolObj = models.Ntuser_SysteminternalsTools(hive=systool["hive"], last_write=systool["last_write"], key_name=systool["key_name"], case=case)
             systoolObj.save()
     return HttpResponse(sysinternals_tools_list)
+
+
+#Begin System View functions
+
+def system_knowndlls(request, case_id):
+    """Parses the SYSTEM hive save and returns Known DLLs."""
+    knowndlls_list = tests.test("knowndlls")
+    case = models.Case.objects.get(pk=case_id)
+    if knowndlls_list is not None:
+        for dll in knowndlls_list:
+                dllObj = models.System_Knowndlls(hive=dll["hive"], last_write=dll["last_write"], name=dll["name"], value=dll["value"], case=case)
+                dllObj.save()
+    return HttpResponse(knowndlls_list)
+
+def system_mounts(request, case_id):
+    """Parses the NTUSER and SYSTEM hives and save  returns mount points (MountPoints2, Map Network Drive MRU, & MountedDevices).
+P"""
+    return ntuser_mounts(request,case_id)
+
+def system_service(request, case_id):
+    """Parses the SYSTEM hive save and returns Known DLLs."""
+    services_list = tests.test("services")
+    case = models.Case.objects.get(pk=case_id)
+    if system_service is not None:
+        for service in services_list:
+                serviceObj = models.System_Services(hive=service["hive"], last_write=service["last_write"], key_name=service["key_name"], image_path=service["image_path"], \
+                type_name=service["type_name"], display_name=service["display_name"], start_type=service["start_type"],\
+                service_dll=service["service_dll"], case=case)
+                serviceObj.save()
+    return HttpResponse(services_list)
+
+def system_system_info(request, case_id):
+    """Parses the SYSTEM hive and save the return system info."""
+    system_information_list = tests.test("sysinfo")
+    case = models.Case.objects.get(pk=case_id)
+    if system_information_list is not None:
+        for info in system_information_list:
+                sysinfoObj = models.System_Sysinfo(hive=info.get("hive",""), installed_date=info.get("InstallDate",""), os_info=info.get("OSInfo",""), \
+                registered_owner=info.get("Owner",""),computer_name=info.get("ComputerName",""), time_zone=info.get("TimeZone",""), case=case)
+                sysinfoObj.save()
+    return HttpResponse(system_information_list)
+
+def system_terminalserver(request, case_id):
+    """Parses the SYSTEM hive save return terminalserver."""
+    system_terminalserver_list = tests.test("terminalserver")
+    case = models.Case.objects.get(pk=case_id)
+    if system_terminalserver_list is not None:
+        for term in system_terminalserver_list:
+                systerminalObj = models.System_Terminal_server(hive=term.get("hive",""), last_write=term.get("last_write",""), key_name=term.get("key_name",""), \
+                value=term.get("value",""),data=term.get("data",""),case=case)
+                systerminalObj.save()
+    return HttpResponse(system_terminalserver_list)
+
+def system_usbstor(request, case_id):
+    """Parses the SYSTEM hive save and return the usbstor entry."""
+    system_usbstor_list = tests.test("usbstor")
+    case = models.Case.objects.get(pk=case_id)
+    if system_usbstor_list is not None:
+        for usb in system_usbstor_list:
+                usbstorObj = models.System_Usbstor(hive=usb.get("hive",""), last_write=usb.get("last_write",""), key=usb.get("key_name",""), \
+                friendly_name=usb.get("friendly_name",""),unique_sn_lastwrite=usb.get("unique_sn_lastwrite",""), unique_sn =usb.get("unique_sn",""),case=case)
+                usbstorObj.save()
+    return HttpResponse(system_usbstor_list)
+
+
+"""Begin of Sofware HIVE """
+
+
+def software_activesetup(request, case_id):
+    software_activesetup_list = tests.test("activesetup")
+    case = models.Case.objects.get(pk=case_id)
+    if software_activesetup_list is not None:
+        for setup in software_activesetup_list:
+                usbstorObj = models.System_Usbstor(hive=usb.get("hive",""), last_write=usb.get("last_write",""), key=usb.get("key_name",""), \
+                friendly_name=usb.get("friendly_name",""),unique_sn_lastwrite=usb.get("unique_sn_lastwrite",""), unique_sn =usb.get("unique_sn",""),case=case)
+                usbstorObj.save()
+    return HttpResponse(system_usbstor_list)

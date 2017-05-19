@@ -12,6 +12,11 @@ class Case(models.Model):
 
     def __str__(self):
         return self.name
+    def create_case(self):
+        case = Case(name="Malware Attack", description="Malware infected system", reference_number="e-CB/TO/CF/LAB/CID/2017/C1",\
+        investigators_name="Philemon Hini", examiners_name="Philemon")
+
+        case.save()
 
 class Ntuser_Lastvisitedmru(models.Model):
     """Parses NTUSER hive and returns LastVisitedMRU, LastVisitedPidlMRU and LastVisitedPidlMRULegacy"""
@@ -147,7 +152,7 @@ class System_Services(models.Model):
     hive = models.CharField(max_length=200)
     last_write = models.CharField(max_length=200)
     key_name = models.CharField(max_length=200)
-    impage_path = models.CharField(max_length=200)
+    image_path = models.CharField(max_length=200)
     type_name = models.CharField(max_length=200)
     display_name = models.CharField(max_length=200)
     start_type = models.CharField(max_length=200)
@@ -185,8 +190,10 @@ class System_Sysinfo(models.Model):
     hive = models.CharField(max_length=200)
     last_write = models.CharField(max_length=200)
     os_info = models.CharField(max_length=200)
+    time_zone = models.CharField(max_length=200)
     installed_date = models.CharField(max_length=200)
     registered_owner = models.CharField(max_length=200)
+    computer_name = models.CharField(max_length=200)
     unique_sn = models.CharField(max_length=200)
     date_modified = models.DateField(auto_now=True)
     date_created = models.DateField(auto_now_add=True)
