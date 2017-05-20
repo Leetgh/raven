@@ -4,7 +4,7 @@ import os
 from registryApp.modules.registry import regparse
 
 def test(plugin):
-  return regparse.runPlugins(["/Users/HappyDay/Documents/python-regparse/Registry/system"], plugin)
+  return regparse.runPlugins(["/Users/HappyDay/Documents/python-regparse/Registry/software"], plugin)
 
 
 

@@ -252,9 +252,10 @@ class Software_Runkeys(models.Model):
 class Software_Sysinfo(models.Model):
     """Store  common auto run entries obtained from SOFTWARE HIVE"""
     hive = models.CharField(max_length=200)
-    last_write = models.DateField()
+    time_zone = models.CharField(max_length=200)
+    computer_name = models.CharField(max_length=200)
     os_info = models.CharField(max_length=200)
-    installed_date = models.DateField()
+    installed_date = models.CharField(max_length=200)
     registered_owner = models.CharField(max_length=200)
     date_modified = models.DateField(auto_now=True)
     date_created = models.DateField(auto_now_add=True)

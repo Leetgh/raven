@@ -115,7 +115,7 @@ def system_service(request, case_id):
     return HttpResponse(services_list)
 
 def system_system_info(request, case_id):
-    """Parses the SYSTEM hive and save the return system info."""
+    """Parses the SYSTEM and SOFTWARE hive and save the return system info."""
     system_information_list = tests.test("sysinfo")
     case = models.Case.objects.get(pk=case_id)
     if system_information_list is not None:
@@ -156,7 +156,79 @@ def software_activesetup(request, case_id):
     case = models.Case.objects.get(pk=case_id)
     if software_activesetup_list is not None:
         for setup in software_activesetup_list:
-                usbstorObj = models.System_Usbstor(hive=usb.get("hive",""), last_write=usb.get("last_write",""), key=usb.get("key_name",""), \
-                friendly_name=usb.get("friendly_name",""),unique_sn_lastwrite=usb.get("unique_sn_lastwrite",""), unique_sn =usb.get("unique_sn",""),case=case)
-                usbstorObj.save()
-    return HttpResponse(system_usbstor_list)
+                setupObj = models.Software_Activesetup(hive=setup.get("hive",""), last_write=setup.get("last_write",""), key=setup.get("key_name",""), \
+                stub_path=setup.get("stub_path",""),case=case)
+                setupObj.save()
+    return HttpResponse(software_activesetup_list)
+
+
+def software_system_info(request, case_id):
+    """Parses the  SOFTWARE hive and save the return system info."""
+    system_information_list = tests.test("sysinfo")
+    case = models.Case.objects.get(pk=case_id)
+    if system_information_list is not None:
+        for info in system_information_list:
+                sysinfoObj = models.Software_Sysinfo(hive=info.get("hive",""), installed_date=info.get("InstallDate",""), os_info=info.get("OSInfo",""), \
+                registered_owner=info.get("Owner",""),computer_name=info.get("ComputerName",""), time_zone=info.get("TimeZone",""), case=case)
+                sysinfoObj.save()
+    return HttpResponse(system_information_list)
+
+def software_appinit(request, case_id):
+    """Parses the  SOFTWARE hive and save and return appinit"""
+    software_appinit_list = tests.test("appinit")
+    case = models.Case.objects.get(pk=case_id)
+    if software_appinit_list is not None:
+        for appinit in software_appinit_list:
+                appinitObj = models.Software_APPINIT(hive=appinit.get("hive",""), last_write=appinit.get("last_write",""), loadapp_data=appinit.get("loadapp_data",""), \
+                appinit_data=appinit.get("appinit_data",""), case=case)
+                appinitObj.save()
+    return HttpResponse(software_appinit_list)
+
+
+def software_runkeys(request, case_id):
+    """Parses the NTUSER hive and returns RunMRU entries. maintain the valueu of items tyyped in the RUN BOX"""
+    runkeys_list = tests.test("runkeys")
+    case = models.Case.objects.get(pk=case_id)
+    if runkeys_list is not None:
+        for runkey in runkeys_list:
+            objRunKey = models.Software_Runkeys(hive=runkey["hive"], last_write=runkey["last_write"], key=runkey["key"], mruorder=runkey["mruorder"], value=runkey["value"], data=runmru["data"], case=case)
+            objRunKey.save()
+    return HttpResponse(runkeys_list)
+
+
+def software_bhos(request, case_id):
+    """Browser Helper Object """
+    bho_list = tests.test("bhos")
+    case = models.Case.objects.get(pk=case_id)
+    if bho_list is not None:
+        for bho in bho_list:
+            bhoObj = models.Software_BHOS(hive=bho["hive"], clsids_lastwrite=bho.get("clsids_lastwrite",""), value=bho.get("value",""), \
+            inproc_lastwrite=bho.get("inproc_lastwrite",""),  data=bho.get("data",""), case=case)
+            bhoObj.save()
+    return HttpResponse(bho_list)
+
+
+# Todo: come back to fix the error in decoding some of the values 
+def software_userassist(request, case_id):
+    """ Process user assist """
+    userassist_list = tests.test("userassist")
+    case = models.Case.objects.get(pk=case_id)
+    if userassist_list is not None:
+        for assist in userassist_list:
+            assistObj = models.Software_Userassit(hive=assist.get("hive",""), last_write=assist.get("last_write",""), sub_key=assist.get("sub_key"), \
+            runcount=assist.get("runcount",""),  windate=assist.get("windate",""), data=assist.get("data",""),case=case)
+            assistObj.save()
+    return HttpResponse(assistObj)
+
+def software_winlogon(request, case_id):
+    """ Process  winlogon """
+    winlogon_list = tests.test("winlogon")
+    case = models.Case.objects.get(pk=case_id)
+    if winlogon_list is not None:
+        for logon in winlogon_list:
+            winlogonObj = models.Software_Winlogon(hive=logon["hive"], last_write=logon.get("last_write",""), key_name=logon.get("key_name",""), \
+            value=logon.get("value",""),  data=logon.get("data",""), case=case)
+            assistObj.save()
+    return HttpResponse(assistObj)
+
+
